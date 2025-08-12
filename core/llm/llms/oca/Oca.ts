@@ -17,7 +17,6 @@ import {
 } from "../../openaiTypeConverters.js";
 import { OcaTokenManager } from "./util/ocaTokenManager.js";
 import { createOcaHeaders, generateOpcRequestId } from "./util/utils.js";
-import { DEFAULT_OCA_BASE_URL } from "./util/constants.js";
 
 interface ModelInfoMap {
   models: { [key: string]: ModelInfo };
@@ -47,9 +46,6 @@ class Oca extends BaseLLM {
   }
 
   static providerName = "oca";
-  static defaultOptions: Partial<LLMOptions> | undefined = {
-    apiBase: DEFAULT_OCA_BASE_URL,
-  };
 
   protected useOpenAIAdapterFor: (LlmApiRequestType | "*")[] = [
     "list",
@@ -98,7 +94,9 @@ class Oca extends BaseLLM {
       );
     }
     const ocaHeaders = await createOcaHeaders(token, this.uniqueId);
-    console.log(`Making request with customer opc-request-id: ${ocaHeaders["opc-request-id"]}`)
+    console.log(
+      `Making request with customer opc-request-id: ${ocaHeaders["opc-request-id"]}`,
+    );
     return ocaHeaders;
   }
 
@@ -119,7 +117,9 @@ class Oca extends BaseLLM {
     return completion;
   }
 
-  protected _getEndpoint(endpoint: "chat/completions" | "models" | "model/info") {
+  protected _getEndpoint(
+    endpoint: "chat/completions" | "models" | "model/info",
+  ) {
     if (!this.apiBase) {
       throw new Error(
         "No API base URL provided. Please set the 'apiBase' option in config.json",
@@ -237,7 +237,7 @@ class Oca extends BaseLLM {
   }
 
   getModelInfo(model: string): ModelInfo | undefined {
-    return this.modelMap.models[model]
+    return this.modelMap.models[model];
   }
 }
 
